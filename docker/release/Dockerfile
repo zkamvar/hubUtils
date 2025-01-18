@@ -32,4 +32,4 @@ RUN apt-get install -y --no-install-recommends \
 
 WORKDIR /project
 # install required R packages using renv
-RUN Rscript -e 'install.packages("hubUtils", repos = "https://hubverse-org.r-universe.dev/bin/linux/noble/4.4/")'
+RUN Rscript -e 'install.packages("hubUtils", repos = c("https://hubverse-org.r-universe.dev/bin/linux/noble/4.4/", "https://packagemanager.posit.co/cran/__linux__/noble/latest"))'
