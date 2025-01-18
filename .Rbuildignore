@@ -18,3 +18,4 @@
 ^\.lintr$
 ^CRAN-SUBMISSION$
 ^cran-comments\.md$
+^docker
