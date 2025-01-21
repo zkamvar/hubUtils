@@ -1,4 +1,4 @@
-FROM rocker/r-ver:4.4.2
+FROM rocker/r-ver:4
 
 LABEL org.opencontainers.image.description="hubUtils development version"
 LABEL org.opencontainers.image.licenses="MIT"
@@ -32,5 +32,9 @@ RUN apt-get install -y --no-install-recommends \
 
 WORKDIR /project
 # install required R packages using renv
-RUN Rscript -e "install.packages('pak', repos = c(CRAN = 'https://cloud.r-project.org'))"
-RUN Rscript -e "pak::pkg_install('hubverse-org/hubUtils')"
+RUN install2.r remotes renv \
+  && strip /usr/local/lib/R/site-library/*/libs/*.so \
+  && rm -rf /tmp/downloaded_packages
+RUN installGithub.r hubverse-org/hubUtils \
+  && strip /usr/local/lib/R/site-library/*/libs/*.so \
+  && rm -rf /tmp/downloaded_packages

@@ -1,4 +1,4 @@
-FROM rocker/r-ver:4.4.2
+FROM rocker/r-ver:4
 
 LABEL org.opencontainers.image.description="hubUtils development version"
 LABEL org.opencontainers.image.licenses="MIT"
@@ -31,15 +31,15 @@ RUN apt-get install -y --no-install-recommends \
 
 
 WORKDIR /project
+
 # install required R packages using renv
-RUN Rscript -e 'install.packages(c("hubUtils", "renv"), repos = c("https://hubverse-org.r-universe.dev/bin/linux/noble/4.4/", "https://packagemanager.posit.co/cran/__linux__/noble/latest"))'
-RUN Rscript -e 'tmp <- tempfile(); \
-dir.create(tmp); \
-owd <- setwd(tmp); \
-writeLines("library(hubUtils)", "tmp.R"); \
-renv::init(); \
-renv::record("hubUtils"); \
-renv::restore(prompt = FALSE); \
-renv::snapshot(); \
-print(owd); \
-file.copy("renv.lock", "/etc/", overwrite = TRUE)'
+RUN install2.r --skipinstalled --error \
+  --repo https://hubverse-org.r-universe.dev/ \
+  --repo getOption \
+  hubUtils \
+  renv \
+  && strip /usr/local/lib/R/site-library/*/libs/*.so \
+  && rm -rf /tmp/downloaded_packages
+
+COPY record-lockfile.R /usr/local/bin/record-lockfile.R
+RUN chmod u+x /usr/local/bin/record-lockfile.R
